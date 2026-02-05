@@ -1,0 +1,21 @@
+# タスクリスト: タイマー画面UI実装
+
+- [x] カラーパレット定義 (`AppColors`)
+- [x] `TimerHeader` (ヘッダー)
+  - [x] テスト作成 (Red)
+  - [x] 実装 (Green)
+- [x] `OverallProgressCard` (全体の進捗)
+  - [x] テスト作成
+  - [x] 実装
+- [x] `CircularTimerDisplay` (円形タイマー)
+  - [x] テスト作成
+  - [x] 実装
+- [x] `TimerControls` (操作ボタン)
+  - [x] テスト作成
+  - [x] 実装
+- [x] `NextSectionButton` (次へボタン)
+  - [x] テスト作成
+  - [x] 実装
+- [x] `TimerPage` 統合
+  - [x] テスト作成
+  - [x] 実装

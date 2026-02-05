@@ -1,9 +1,14 @@
+import 'package:classroom_timer/presentation/widgets/timer/circular_timer_display.dart';
+import 'package:classroom_timer/presentation/widgets/timer/next_section_button.dart';
+import 'package:classroom_timer/presentation/widgets/timer/overall_progress_card.dart';
+import 'package:classroom_timer/presentation/widgets/timer/timer_controls.dart';
+import 'package:classroom_timer/presentation/widgets/timer/timer_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/classroom_timer.dart';
 import '../../domain/entities/phase.dart';
 import '../providers/timer_controller.dart';
-import '../widgets/traffic_light_indicator.dart';
+// import '../widgets/traffic_light_indicator.dart'; // No longer used
 
 class TimerPage extends ConsumerStatefulWidget {
   const TimerPage({super.key});
@@ -37,83 +42,114 @@ class _TimerPageState extends ConsumerState<TimerPage> {
   Widget build(BuildContext context) {
     final state = ref.watch(timerControllerProvider);
     final controller = ref.read(timerControllerProvider.notifier);
+    
+    // Theme setup based on HTML config if needed, but handled by widgets
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-    // タイマー未ロード時はローディング
     if (state.currentTimer == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    
-    final remaining = state.remainingTime;
 
+    final currentPhase = state.currentTimer!.phases[state.currentPhaseIndex];
+    // Calculate total duration of this phase? Or total duration of everything?
+    // "全体の進捗" uses total duration of the class.
+    // "円形タイマー" uses remaining time of current phase? 
+    // HTML: "現在のセクション" "グループワーク・演習" "12:45"
+    // Usually section timer.
+    
+    // Logic for Overall Progress
+    // We need total elapsed time vs total time.
+    final totalDuration = Duration(minutes: state.currentTimer!.totalDurationMinutes);
+    final totalElapsed = state.elapsedTime; // Assuming this tracks total elapsed
+    
+    // Check if started (based on elapsed time being zero)
+    // Note: If user pauses immediately at 0, it might show start. 
+    // Assuming start immediately ticks or we rely on isRunning for something else.
+    // Ideally we track 'hasStarted' in state, but elapsed == 0 is good enough for "Reset" state.
+    // Fix: check isRunning too, so it switches immediately on start tap.
+    final bool hasStarted = totalElapsed > Duration.zero || state.isRunning;
+
+    // Logic for Current Phase
+    // HTML "次は: まとめ (残り15分)"
+    // User Feedback: "全体の進捗の「次は：」に、最初のセクション（サンプルだと、「導入」）が表示される形にして" (when before start)
+    
+    String nextPhaseTitle;
+    Duration nextPhaseDuration;
+    
+    if (!hasStarted) {
+        // Before start: Show current (first/active) section as "Next" (or "Starting")
+        nextPhaseTitle = currentPhase.title;
+        nextPhaseDuration = Duration(minutes: currentPhase.durationMinutes);
+    } else {
+        // Standard logic
+        final hasNext = state.currentPhaseIndex < state.currentTimer!.phases.length - 1;
+        nextPhaseTitle = hasNext ? state.currentTimer!.phases[state.currentPhaseIndex + 1].title : '終了';
+        nextPhaseDuration = hasNext ? Duration(minutes: state.currentTimer!.phases[state.currentPhaseIndex + 1].durationMinutes) : Duration.zero;
+    }
+
+    // Logic for Circular Timer (Current Phase)
+    // state.remainingTime is usually for the current phase.
+    final phaseTotalDuration = Duration(minutes: currentPhase.durationMinutes);
+    // If remainingTime is 12:45, and total is 20:00.
+    
     return Scaffold(
-      appBar: AppBar(
-        title: Text(state.currentTimer!.title),
-      ),
-      body: Column(
-        children: [
-          // 信号機UI
-          TrafficLightIndicator(remaining: remaining),
-          
-          const SizedBox(height: 20),
-          
-          // 情報表示
-          Text('経過時間: ${_formatDuration(state.elapsedTime)}'),
-          Text('現在のフェーズ: ${state.currentTimer!.phases[state.currentPhaseIndex].title}'),
-          Text('フェーズNo: ${state.currentPhaseIndex + 1} / ${state.currentTimer!.phases.length}'),
-          
-          const SizedBox(height: 40),
-          
-          // 操作ボタン
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: state.isRunning ? controller.pause : controller.start,
-                child: Text(state.isRunning ? 'PAUSE' : 'START'),
-              ),
-              ElevatedButton(
-                onPressed: controller.reset,
-                child: const Text('RESET'),
-              ),
-            ],
-          ),
-          
-          const SizedBox(height: 20),
-          
-          // フェーズ操作
-          ElevatedButton(
-            onPressed: controller.nextPhase,
-            child: const Text('次のフェーズへ'),
-          ),
-          
-          const Spacer(),
-          
-          // 巻きボタン（大きく）
-          Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: SizedBox(
-              width: double.infinity,
-              height: 80,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.speed),
-                label: const Text('巻き実行 (Maki)'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orangeAccent,
-                  foregroundColor: Colors.white,
-                  textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      backgroundColor: isDark ? const Color(0xFF0F1423) : const Color(0xFFF5F6F8),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const TimerHeader(),
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                constraints: const BoxConstraints(maxWidth: 512), // max-w-lg
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 24), // mt-6
+                    
+                    OverallProgressCard(
+                      elapsed: totalElapsed,
+                      total: totalDuration,
+                      nextPhaseTitle: nextPhaseTitle,
+                      nextPhaseRemaining: nextPhaseDuration,
+                    ),
+                    
+                            Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularTimerDisplay(
+                            phaseTitle: currentPhase.title,
+                            remaining: state.currentSectionRemainingTime, // Changed from state.remainingTime
+                            total: phaseTotalDuration,
+                            isAutoDistributionEnabled: true, // Hardcoded in HTML, maybe state later?
+                            hasStarted: hasStarted,
+                            onStart: controller.start,
+                          ),
+                          const SizedBox(height: 48), // mt-12
+                          TimerControls(
+                            isRunning: state.isRunning,
+                            onTogglePause: state.isRunning ? controller.pause : controller.start,
+                            onReset: controller.reset,
+                          ),
+                        ],
+                      ),
+                    ),
+                    
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24), // pb-10 pt-4 (approx)
+                      child: NextSectionButton(
+                        onPressed: controller.nextPhase,
+                      ),
+                    ),
+                  ],
                 ),
-                onPressed: controller.executeMaki,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
-  }
-  
-  String _formatDuration(Duration d) {
-    final m = d.inMinutes;
-    final s = d.inSeconds % 60;
-    return '${m}m ${s}s';
   }
 }
