@@ -6,7 +6,7 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:classroom_timer/core/providers/isar_provider.dart';
 import 'package:classroom_timer/data/models/classroom_timer_model.dart';
-import 'package:classroom_timer/presentation/pages/timer_page.dart';
+import 'package:classroom_timer/presentation/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,12 +43,18 @@ class MyApp extends StatelessWidget {
         Locale('ja', 'JP'),
       ],
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF5579FA),
+          primary: const Color(0xFF5579FA),
+          background: const Color(0xFFF5F6F8),
+        ),
         useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xFFF5F6F8),
+        fontFamily: GoogleFonts.notoSansJp().fontFamily,
         textTheme: GoogleFonts.notoSansJpTextTheme(),
       ),
 
-      home: const TimerPage(),
+      home: const HomePage(),
     );
   }
 }

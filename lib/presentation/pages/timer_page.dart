@@ -2,7 +2,7 @@ import 'package:classroom_timer/presentation/widgets/timer/circular_timer_displa
 import 'package:classroom_timer/presentation/widgets/timer/next_section_button.dart';
 import 'package:classroom_timer/presentation/widgets/timer/overall_progress_card.dart';
 import 'package:classroom_timer/presentation/widgets/timer/timer_controls.dart';
-import 'package:classroom_timer/presentation/widgets/timer/timer_header.dart';
+import 'package:classroom_timer/presentation/widgets/common/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/classroom_timer.dart';
@@ -95,56 +95,74 @@ class _TimerPageState extends ConsumerState<TimerPage> {
     
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF0F1423) : const Color(0xFFF5F6F8),
+      appBar: const CustomAppBar(
+        title: '授業タイマー',
+        showBackButton: true,
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            const TimerHeader(),
             Expanded(
-              child: Container(
-                width: double.infinity,
-                constraints: const BoxConstraints(maxWidth: 512), // max-w-lg
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 24), // mt-6
-                    
-                    OverallProgressCard(
-                      elapsed: totalElapsed,
-                      total: totalDuration,
-                      nextPhaseTitle: nextPhaseTitle,
-                      nextPhaseRemaining: nextPhaseDuration,
-                    ),
-                    
-                            Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircularTimerDisplay(
-                            phaseTitle: currentPhase.title,
-                            remaining: state.currentSectionRemainingTime, // Changed from state.remainingTime
-                            total: phaseTotalDuration,
-                            isAutoDistributionEnabled: true, // Hardcoded in HTML, maybe state later?
-                            hasStarted: hasStarted,
-                            onStart: controller.start,
-                          ),
-                          const SizedBox(height: 48), // mt-12
-                          TimerControls(
-                            isRunning: state.isRunning,
-                            onTogglePause: state.isRunning ? controller.pause : controller.start,
-                            onReset: controller.reset,
-                          ),
-                        ],
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        constraints: const BoxConstraints(maxWidth: 512),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: [
+                                const SizedBox(height: 24),
+                                OverallProgressCard(
+                                  elapsed: totalElapsed,
+                                  total: totalDuration,
+                                  nextPhaseTitle: nextPhaseTitle,
+                                  nextPhaseRemaining: nextPhaseDuration,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(height: 24),
+                                CircularTimerDisplay(
+                                  phaseTitle: currentPhase.title,
+                                  remaining: state.currentSectionRemainingTime,
+                                  total: phaseTotalDuration,
+                                  isAutoDistributionEnabled: true,
+                                  hasStarted: hasStarted,
+                                  onStart: controller.start,
+                                ),
+                                const SizedBox(height: 32),
+                                TimerControls(
+                                  isRunning: state.isRunning,
+                                  onTogglePause: state.isRunning
+                                      ? controller.pause
+                                      : controller.start,
+                                  onReset: controller.reset,
+                                ),
+                                const SizedBox(height: 24),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 24),
+                              child: NextSectionButton(
+                                onPressed: controller.nextPhase,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 24), // pb-10 pt-4 (approx)
-                      child: NextSectionButton(
-                        onPressed: controller.nextPhase,
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
             ),
           ],
