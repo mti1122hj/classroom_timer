@@ -1,5 +1,6 @@
 import 'package:classroom_timer/domain/entities/class_session_type.dart';
 import 'package:classroom_timer/presentation/pages/timer_page.dart';
+import 'package:classroom_timer/presentation/pages/template_edit/template_edit_page.dart';
 import 'package:flutter/material.dart';
 
 class TemplateGrid extends StatelessWidget {
@@ -185,7 +186,11 @@ class _CustomTemplateCard extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(24),
           onTap: () {
-            // TODO: Navigate to custom create page
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const TemplateEditPage(),
+              ),
+            );
           },
           child: Padding(
             padding: const EdgeInsets.all(24.0),
