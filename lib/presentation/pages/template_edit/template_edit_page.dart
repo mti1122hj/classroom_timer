@@ -29,7 +29,12 @@ class _TemplateEditPageState extends ConsumerState<TemplateEditPage> {
           TextButton(
             onPressed: () async {
               if (state.currentTotalDuration == 0) {
-                 // ...
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('合計時間が0分のテンプレートは保存できません')),
+                  );
+                }
+                return;
               }
               final valid = _formKey.currentState!.validate();
               if (valid) {

@@ -1,5 +1,6 @@
 import 'package:classroom_timer/domain/entities/class_session_type.dart';
 import 'package:classroom_timer/presentation/providers/repository_providers.dart';
+import 'package:classroom_timer/presentation/providers/class_session_providers.dart';
 import 'package:classroom_timer/presentation/widgets/home/bottom_nav_bar.dart';
 import 'package:classroom_timer/presentation/widgets/common/custom_app_bar.dart';
 import 'package:classroom_timer/presentation/widgets/home/recent_history_section.dart';
@@ -12,7 +13,7 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sessionTypesAsync = ref.watch(classSessionRepositoryProvider).getClassSessionTypes();
+
 
     return Scaffold(
       extendBodyBehindAppBar: true, 
@@ -27,18 +28,10 @@ class HomePage extends ConsumerWidget {
             child: Column(
               children: [
                 // Template Grid Section
-                FutureBuilder<List<ClassSessionType>>(
-                  future: sessionTypesAsync,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasError) {
-                      return Center(child: Text('エラーが発生しました: ${snapshot.error}'));
-                    }
-                    final sessionTypes = snapshot.data ?? [];
-                    return TemplateGrid(sessionTypes: sessionTypes);
-                  },
+                ref.watch(classSessionTypesStreamProvider).when(
+                  data: (sessionTypes) => TemplateGrid(sessionTypes: sessionTypes),
+                  error: (error, stack) => Center(child: Text('エラーが発生しました: $error')),
+                  loading: () => const Center(child: CircularProgressIndicator()),
                 ),
                 
                 const SizedBox(height: 32),

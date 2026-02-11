@@ -24,6 +24,11 @@ class FakeClassSessionRepository implements ClassSessionRepository {
 
   @override
   Future<ClassSessionType?> getClassSessionTypeById(String id) async => null;
+
+  @override
+  Stream<List<ClassSessionType>> watchClassSessionTypes() {
+    return Stream.value([]);
+  }
 }
 
 void main() {

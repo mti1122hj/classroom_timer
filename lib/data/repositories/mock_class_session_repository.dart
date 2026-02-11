@@ -42,6 +42,11 @@ class MockClassSessionRepository implements ClassSessionRepository {
   }
 
   @override
+  Stream<List<ClassSessionType>> watchClassSessionTypes() {
+    return Stream.fromFuture(getClassSessionTypes());
+  }
+
+  @override
   Future<ClassSessionType?> getClassSessionTypeById(String id) async {
     final types = await getClassSessionTypes();
     try {

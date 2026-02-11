@@ -1,28 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'repository_providers.dart';
+part of 'class_session_providers.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$classSessionRepositoryHash() =>
-    r'ce46cef6fad617dbb14ed1808c436f3591767549';
+String _$classSessionTypesStreamHash() =>
+    r'307fb71cb53d58878bb435592224c7ad1dcaba88';
 
-/// See also [classSessionRepository].
-@ProviderFor(classSessionRepository)
-final classSessionRepositoryProvider =
-    AutoDisposeProvider<ClassSessionRepository>.internal(
-  classSessionRepository,
-  name: r'classSessionRepositoryProvider',
+/// See also [classSessionTypesStream].
+@ProviderFor(classSessionTypesStream)
+final classSessionTypesStreamProvider =
+    AutoDisposeStreamProvider<List<ClassSessionType>>.internal(
+  classSessionTypesStream,
+  name: r'classSessionTypesStreamProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$classSessionRepositoryHash,
+      : _$classSessionTypesStreamHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef ClassSessionRepositoryRef
-    = AutoDisposeProviderRef<ClassSessionRepository>;
+typedef ClassSessionTypesStreamRef
+    = AutoDisposeStreamProviderRef<List<ClassSessionType>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

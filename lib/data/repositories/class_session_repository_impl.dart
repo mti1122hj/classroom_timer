@@ -17,6 +17,13 @@ class ClassSessionRepositoryImpl implements ClassSessionRepository {
   }
 
   @override
+  Stream<List<ClassSessionType>> watchClassSessionTypes() {
+    return _isar.classSessionTypeModels.where().watch(fireImmediately: true).map((models) {
+      return models.map((m) => _toDomain(m)).toList();
+    });
+  }
+
+  @override
   Future<ClassSessionType?> getClassSessionTypeById(String id) async {
     final model = await _isar.classSessionTypeModels.getBySessionId(id);
     return model != null ? _toDomain(model) : null;
