@@ -109,7 +109,7 @@ class _TemplateCard extends StatelessWidget {
           onTap: () {
              Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => const TimerPage(),
+                builder: (context) => TimerPage(sessionType: sessionType),
               ),
             );
           },

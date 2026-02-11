@@ -5,14 +5,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:classroom_timer/domain/entities/class_session_type.dart';
+
 void main() {
   testWidgets('TimerPage displays all new components and start state', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(400, 1200));
 
+    const dummySessionType = ClassSessionType(
+      id: 'test_id',
+      name: 'Test Class',
+      totalDurationInMinutes: 60,
+      sections: [
+        SessionSection(id: 'p1', label: '導入', durationInMinutes: 10),
+        SessionSection(id: 'p2', label: '展開', durationInMinutes: 40),
+        SessionSection(id: 'p3', label: 'まとめ', durationInMinutes: 10),
+      ],
+    );
+
     await tester.pumpWidget(
       const ProviderScope(
         child: MaterialApp(
-          home: TimerPage(),
+          home: TimerPage(sessionType: dummySessionType),
         ),
       ),
     );

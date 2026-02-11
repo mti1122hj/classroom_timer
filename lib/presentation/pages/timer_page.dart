@@ -10,8 +10,12 @@ import '../../domain/entities/phase.dart';
 import '../providers/timer_controller.dart';
 // import '../widgets/traffic_light_indicator.dart'; // No longer used
 
+import '../../domain/entities/class_session_type.dart';
+
 class TimerPage extends ConsumerStatefulWidget {
-  const TimerPage({super.key});
+  final ClassSessionType sessionType;
+
+  const TimerPage({super.key, required this.sessionType});
 
   @override
   ConsumerState<TimerPage> createState() => _TimerPageState();
@@ -24,17 +28,17 @@ class _TimerPageState extends ConsumerState<TimerPage> {
     // テスト用にダミーデータをロード
     // 実際は一覧画面から渡されたりRepositoryから取得する
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final dummyTimer = ClassroomTimer(
-        id: '1',
-        title: 'Demo Class',
-        totalDurationMinutes: 60,
-        phases: [
-          const Phase(id: 'p1', title: '導入', durationMinutes: 10),
-          const Phase(id: 'p2', title: '展開', durationMinutes: 40),
-          const Phase(id: 'p3', title: 'まとめ', durationMinutes: 10),
-        ],
+      final timer = ClassroomTimer(
+        id: DateTime.now().toIso8601String(), // Generate a unique ID for this instance
+        title: widget.sessionType.name,
+        totalDurationMinutes: widget.sessionType.totalDurationInMinutes,
+        phases: widget.sessionType.sections.map((s) => Phase(
+          id: s.id,
+          title: s.label,
+          durationMinutes: s.durationInMinutes,
+        )).toList(),
       );
-      ref.read(timerControllerProvider.notifier).loadTimer(dummyTimer);
+      ref.read(timerControllerProvider.notifier).loadTimer(timer);
     });
   }
 
