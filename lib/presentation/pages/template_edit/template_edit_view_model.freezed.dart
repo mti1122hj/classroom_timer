@@ -16,6 +16,8 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$TemplateEditState {
+  String? get id =>
+      throw _privateConstructorUsedError; // Template ID (null for new template)
   List<Phase> get phases => throw _privateConstructorUsedError;
   int get totalDurationMinutes => throw _privateConstructorUsedError;
   bool get autoAdjustEnabled => throw _privateConstructorUsedError;
@@ -33,7 +35,8 @@ abstract class $TemplateEditStateCopyWith<$Res> {
       _$TemplateEditStateCopyWithImpl<$Res, TemplateEditState>;
   @useResult
   $Res call(
-      {List<Phase> phases,
+      {String? id,
+      List<Phase> phases,
       int totalDurationMinutes,
       bool autoAdjustEnabled,
       String templateName});
@@ -52,12 +55,17 @@ class _$TemplateEditStateCopyWithImpl<$Res, $Val extends TemplateEditState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? phases = null,
     Object? totalDurationMinutes = null,
     Object? autoAdjustEnabled = null,
     Object? templateName = null,
   }) {
     return _then(_value.copyWith(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       phases: null == phases
           ? _value.phases
           : phases // ignore: cast_nullable_to_non_nullable
@@ -87,7 +95,8 @@ abstract class _$$TemplateEditStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<Phase> phases,
+      {String? id,
+      List<Phase> phases,
       int totalDurationMinutes,
       bool autoAdjustEnabled,
       String templateName});
@@ -104,12 +113,17 @@ class __$$TemplateEditStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? phases = null,
     Object? totalDurationMinutes = null,
     Object? autoAdjustEnabled = null,
     Object? templateName = null,
   }) {
     return _then(_$TemplateEditStateImpl(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       phases: null == phases
           ? _value._phases
           : phases // ignore: cast_nullable_to_non_nullable
@@ -134,14 +148,19 @@ class __$$TemplateEditStateImplCopyWithImpl<$Res>
 
 class _$TemplateEditStateImpl extends _TemplateEditState {
   const _$TemplateEditStateImpl(
-      {final List<Phase> phases = const [],
+      {this.id,
+      final List<Phase> phases = const [],
       this.totalDurationMinutes = 50,
       this.autoAdjustEnabled = true,
       this.templateName = ''})
       : _phases = phases,
         super._();
 
+  @override
+  final String? id;
+// Template ID (null for new template)
   final List<Phase> _phases;
+// Template ID (null for new template)
   @override
   @JsonKey()
   List<Phase> get phases {
@@ -162,7 +181,7 @@ class _$TemplateEditStateImpl extends _TemplateEditState {
 
   @override
   String toString() {
-    return 'TemplateEditState(phases: $phases, totalDurationMinutes: $totalDurationMinutes, autoAdjustEnabled: $autoAdjustEnabled, templateName: $templateName)';
+    return 'TemplateEditState(id: $id, phases: $phases, totalDurationMinutes: $totalDurationMinutes, autoAdjustEnabled: $autoAdjustEnabled, templateName: $templateName)';
   }
 
   @override
@@ -170,6 +189,7 @@ class _$TemplateEditStateImpl extends _TemplateEditState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TemplateEditStateImpl &&
+            (identical(other.id, id) || other.id == id) &&
             const DeepCollectionEquality().equals(other._phases, _phases) &&
             (identical(other.totalDurationMinutes, totalDurationMinutes) ||
                 other.totalDurationMinutes == totalDurationMinutes) &&
@@ -182,6 +202,7 @@ class _$TemplateEditStateImpl extends _TemplateEditState {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      id,
       const DeepCollectionEquality().hash(_phases),
       totalDurationMinutes,
       autoAdjustEnabled,
@@ -197,13 +218,16 @@ class _$TemplateEditStateImpl extends _TemplateEditState {
 
 abstract class _TemplateEditState extends TemplateEditState {
   const factory _TemplateEditState(
-      {final List<Phase> phases,
+      {final String? id,
+      final List<Phase> phases,
       final int totalDurationMinutes,
       final bool autoAdjustEnabled,
       final String templateName}) = _$TemplateEditStateImpl;
   const _TemplateEditState._() : super._();
 
   @override
+  String? get id;
+  @override // Template ID (null for new template)
   List<Phase> get phases;
   @override
   int get totalDurationMinutes;

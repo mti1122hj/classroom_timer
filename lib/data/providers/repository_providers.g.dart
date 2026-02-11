@@ -21,5 +21,22 @@ final timerRepositoryProvider = Provider<TimerRepository>.internal(
 );
 
 typedef TimerRepositoryRef = ProviderRef<TimerRepository>;
+String _$classSessionRepositoryHash() =>
+    r'f7be9ae9e85c6bc2502669b862a6aa3a7f5e8d02';
+
+/// See also [classSessionRepository].
+@ProviderFor(classSessionRepository)
+final classSessionRepositoryProvider =
+    Provider<ClassSessionRepository>.internal(
+  classSessionRepository,
+  name: r'classSessionRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$classSessionRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef ClassSessionRepositoryRef = ProviderRef<ClassSessionRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

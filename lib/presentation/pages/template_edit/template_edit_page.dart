@@ -27,16 +27,27 @@ class _TemplateEditPageState extends ConsumerState<TemplateEditPage> {
         showBackButton: true,
         actions: [
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               if (state.currentTotalDuration == 0) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('合計時間が0分のテンプレートは保存できません')),
-                );
-                return;
+                 // ...
               }
-              if (_formKey.currentState!.validate()) {
-                // TODO: Implement save
-                Navigator.of(context).pop();
+              final valid = _formKey.currentState!.validate();
+              if (valid) {
+                 try {
+                  await viewModel.saveTemplate();
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('テンプレートを保存しました')),
+                    );
+                    Navigator.of(context).pop();
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('保存に失敗しました: $e')),
+                    );
+                  }
+                }
               }
             },
             child: Text(

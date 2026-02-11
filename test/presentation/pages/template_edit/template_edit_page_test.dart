@@ -4,10 +4,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:classroom_timer/domain/entities/class_session_type.dart';
+import 'package:classroom_timer/domain/repositories/class_session_repository.dart';
+import 'package:classroom_timer/data/providers/repository_providers.dart';
+
+class FakeClassSessionRepository implements ClassSessionRepository {
+  int saveCallCount = 0;
+
+  @override
+  Future<void> saveClassSessionType(ClassSessionType classSessionType) async {
+    saveCallCount++;
+  }
+  
+  @override
+  Future<void> deleteClassSessionType(String id) async {}
+
+  @override
+  Future<List<ClassSessionType>> getClassSessionTypes() async => [];
+
+  @override
+  Future<ClassSessionType?> getClassSessionTypeById(String id) async => null;
+}
+
 void main() {
-  Widget createWidgetUnderTest() {
-    return const ProviderScope(
-      child: MaterialApp(
+  Widget createWidgetUnderTest({FakeClassSessionRepository? repo}) {
+    return ProviderScope(
+      overrides: [
+        classSessionRepositoryProvider.overrideWith((ref) => repo ?? FakeClassSessionRepository()),
+      ],
+      child: const MaterialApp(
         home: TemplateEditPage(),
       ),
     );

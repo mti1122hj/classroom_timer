@@ -4,11 +4,15 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../domain/entities/phase.dart';
 
+import '../../../../domain/entities/class_session_type.dart';
+import '../../../../domain/usecases/save_template_usecase.dart';
+
 part 'template_edit_view_model.freezed.dart';
 
 @freezed
 class TemplateEditState with _$TemplateEditState {
   const factory TemplateEditState({
+    String? id, // Template ID (null for new template)
     @Default([]) List<Phase> phases,
     @Default(50) int totalDurationMinutes,
     @Default(true) bool autoAdjustEnabled,
@@ -21,13 +25,39 @@ class TemplateEditState with _$TemplateEditState {
 }
 
 class TemplateEditViewModel extends StateNotifier<TemplateEditState> {
-  TemplateEditViewModel()
+  final SaveTemplateUseCase _saveTemplateUseCase;
+
+  TemplateEditViewModel(this._saveTemplateUseCase)
       : super(const TemplateEditState(phases: [
           Phase(id: '1', title: '導入', durationMinutes: 5),
           Phase(id: '2', title: '個人ワーク', durationMinutes: 25),
           Phase(id: '3', title: 'グループ共有・発表', durationMinutes: 15),
           Phase(id: '4', title: 'まとめ', durationMinutes: 5),
         ]));
+
+  Future<void> saveTemplate() async {
+    final templateId = state.id ?? const Uuid().v4();
+    
+    final sections = state.phases.map((p) => SessionSection(
+      id: p.id,
+      label: p.title,
+      durationInMinutes: p.durationMinutes,
+      isBreak: false, // Default false for now
+    )).toList();
+
+    final template = ClassSessionType(
+      id: templateId,
+      name: state.templateName,
+      totalDurationInMinutes: state.currentTotalDuration,
+      sections: sections,
+    );
+
+    await _saveTemplateUseCase.execute(template);
+
+    if (state.id == null) {
+      state = state.copyWith(id: templateId);
+    }
+  }
 
   void addPhase() {
     state = state.copyWith(
@@ -92,5 +122,6 @@ class TemplateEditViewModel extends StateNotifier<TemplateEditState> {
 
 final templateEditViewModelProvider =
     StateNotifierProvider<TemplateEditViewModel, TemplateEditState>((ref) {
-  return TemplateEditViewModel();
+  final saveUseCase = ref.watch(saveTemplateUseCaseProvider);
+  return TemplateEditViewModel(saveUseCase);
 });

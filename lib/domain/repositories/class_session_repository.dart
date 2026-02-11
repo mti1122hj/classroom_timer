@@ -6,4 +6,10 @@ abstract class ClassSessionRepository {
   
   /// returns a single class session type by ID
   Future<ClassSessionType?> getClassSessionTypeById(String id);
+  
+  /// saves a class session type (create or update)
+  Future<void> saveClassSessionType(ClassSessionType classSessionType);
+  
+  /// deletes a class session type by ID
+  Future<void> deleteClassSessionType(String id);
 }

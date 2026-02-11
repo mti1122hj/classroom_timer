@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:classroom_timer/core/providers/isar_provider.dart';
+import 'package:classroom_timer/data/models/class_session_type_model.dart';
 import 'package:classroom_timer/data/models/classroom_timer_model.dart';
 import 'package:classroom_timer/presentation/pages/home_page.dart';
 
@@ -13,7 +14,10 @@ void main() async {
   
   final dir = await getApplicationDocumentsDirectory();
   final isar = await Isar.open(
-    [ClassroomTimerModelSchema],
+    [
+      ClassroomTimerModelSchema,
+      ClassSessionTypeModelSchema,
+    ],
     directory: dir.path,
   );
 

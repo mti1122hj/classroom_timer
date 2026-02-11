@@ -50,4 +50,13 @@ class MockClassSessionRepository implements ClassSessionRepository {
       return null;
     }
   }
+  @override
+  Future<void> saveClassSessionType(ClassSessionType classSessionType) async {
+    // Mock implementation - do nothing
+  }
+
+  @override
+  Future<void> deleteClassSessionType(String id) async {
+    // Mock implementation - do nothing
+  }
 }
