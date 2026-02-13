@@ -9,8 +9,12 @@ void main() {
   testWidgets('HomePage displays mock session types', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
+
+      ProviderScope(
+        overrides: [
+          classSessionRepositoryProvider.overrideWith((ref) => MockClassSessionRepository()),
+        ],
+        child: const MaterialApp(
           home: HomePage(),
         ),
       ),

@@ -3,7 +3,7 @@ import 'package:classroom_timer/presentation/providers/repository_providers.dart
 import 'package:classroom_timer/presentation/providers/class_session_providers.dart';
 import 'package:classroom_timer/presentation/widgets/home/bottom_nav_bar.dart';
 import 'package:classroom_timer/presentation/widgets/common/custom_app_bar.dart';
-import 'package:classroom_timer/presentation/widgets/home/recent_history_section.dart';
+
 import 'package:classroom_timer/presentation/widgets/home/template_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,11 +33,6 @@ class HomePage extends ConsumerWidget {
                   error: (error, stack) => Center(child: Text('エラーが発生しました: $error')),
                   loading: () => const Center(child: CircularProgressIndicator()),
                 ),
-                
-                const SizedBox(height: 32),
-                
-                // History Section
-                const RecentHistorySection(),
                 
                 // Bottom padding
                 const SizedBox(height: 24),
